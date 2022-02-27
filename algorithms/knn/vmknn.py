@@ -490,19 +490,19 @@ class VMContextKNN:
             else:
                 pos_map[item] = 1
             
-        dt = dwelling_times.copy()
-        dt.append(0)
-        dt = pd.Series(dt, index=session_items)  
-        dt = dt / dt.max()
-        #dt[session_items[-1]] = dt.mean() if len(session_items) > 1 else 1
-        dt[session_items[-1]] = 1
+        # dt = dwelling_times.copy()
+        # dt.append(0)
+        # dt = pd.Series(dt, index=session_items)  
+        # dt = dt / dt.max()
+        # #dt[session_items[-1]] = dt.mean() if len(session_items) > 1 else 1
+        # dt[session_items[-1]] = 1
         
-        if self.dwelling_time:
-            #print(dt)
-            for i in range(len(dt)):
-                pos_map[session_items[i]] *= dt.iloc[i]
-            #print(pos_map)        
-        #print 'nb of sessions to test ', len(sessionsToTest), ' metric: ', self.metric
+        # if self.dwelling_time:
+        #     #print(dt)
+        #     for i in range(len(dt)):
+        #         pos_map[session_items[i]] *= dt.iloc[i]
+        #     #print(pos_map)        
+        # #print 'nb of sessions to test ', len(sessionsToTest), ' metric: ', self.metric
         items = set(session_items)
         neighbors = []
         cnt = 0
