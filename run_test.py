@@ -12,7 +12,7 @@ from algorithms.knn import sfcknn as sfsknn
 from algorithms.knn import scknn as ssknn
 from algorithms.knn import vmknn as vsknn
 
-from algorithms.gru4rec import gru4rec2
+# from algorithms.gru4rec import gru4rec2
 from algorithms.smf import smf
 from algorithms.sbr_adapter import adapter as ad
 
@@ -37,12 +37,12 @@ if __name__ == '__main__':
     data_path = 'data/rsc15/single/'
     file_prefix = 'rsc15-clicks'
 
-    limit_train = None #limit in number of rows or None
-    limit_test = None #limit in number of rows or None
+    limit_train = 600 #limit in number of rows or None
+    limit_test = 600 #limit in number of rows or None
     density_value = 1 #randomly filter out events (0.0-1.0, 1:keep all)
     remove_imdups = False
     
-    export_csv = 'results/test-results.csv'
+    export_csv = 'all-test-results.csv'
     
     print( data_path )
      
@@ -100,8 +100,8 @@ if __name__ == '__main__':
         
     #gr4rec2
     
-    gru = gru4rec2.GRU4Rec(n_epochs=10, loss='bpr-max-0.5', final_act='linear', hidden_act='tanh', layers=[100], batch_size=32, dropout_p_hidden=0.0, learning_rate=0.2, momentum=0.5, n_sample=2048, sample_alpha=0, time_sort=True)
-    algs['gru-100-bpr-max-0.5'] = gru
+    # gru = gru4rec2.GRU4Rec(n_epochs=10, loss='bpr-max-0.5', final_act='linear', hidden_act='tanh', layers=[100], batch_size=32, dropout_p_hidden=0.0, learning_rate=0.2, momentum=0.5, n_sample=2048, sample_alpha=0, time_sort=True)
+    # algs['gru-100-bpr-max-0.5'] = gru
     
     #session mf
     
@@ -189,8 +189,8 @@ if __name__ == '__main__':
                 file.write(';')
             file.write('\n')   
     
-    #comment out when not using gru
-    file = open( "mdl/test-gru.mdl", "wb+" )
-    pkl.dump( gru, file )
+    # #comment out when not using gru
+    # file = open( "mdl/test-gru.mdl", "wb+" )
+    # pkl.dump( gru, file )
     file.close()
     
