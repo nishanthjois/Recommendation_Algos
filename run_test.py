@@ -5,6 +5,7 @@ from pympler import asizeof
 from algorithms.baselines import ar
 from algorithms.baselines import sr
 from algorithms.baselines import markov
+from algorithms.baselines import spop
 
 from algorithms.knn import iknn
 from algorithms.knn import cknn as sknn
@@ -12,7 +13,7 @@ from algorithms.knn import sfcknn as sfsknn
 from algorithms.knn import scknn as ssknn
 from algorithms.knn import vmknn as vsknn
 
-# from algorithms.gru4rec import gru4rec2
+from algorithms.gru4rec import gru4rec2
 from algorithms.smf import smf
 from algorithms.sbr_adapter import adapter as ad
 
@@ -72,67 +73,72 @@ if __name__ == '__main__':
     
     #baselines
     
-    mk = markov.MarkovModel()
-    algs['markov'] = mk
+    # mk = markov.MarkovModel()
+    # algs['markov'] = mk
           
-    sra = sr.SequentialRules( 10, weighting='div', pruning=20, last_n_days=None )
-    algs['sr10-div'] = sra
+    # sra = sr.SequentialRules( 10, weighting='div', pruning=20, last_n_days=None )
+    # algs['sr10-div'] = sra
       
-    ara = ar.AssosiationRules();
-    algs['ar'] = ara
+    # ara = ar.AssosiationRules();
+    # algs['ar'] = ara
      
     #knn
      
     iknn = iknn.ItemKNN()
     algs['iknn'] = iknn
-     
-    sknn = sknn.ContextKNN( 100, 500, similarity="cosine", extend=False )
-    algs['sknn-100-500-cosine'] = sknn
+    
+    spop = spop.SessionPop()
+    algs['spop'] = spop
+    # sknn = sknn.ContextKNN( 100, 500, similarity="cosine", extend=False )
+    # algs['sknn-100-500-cosine'] = sknn
       
-    vmsknn = vsknn.VMContextKNN( 100, 2000, similarity="cosine", last_n_days=None, extend=False )
+    vmsknn = vsknn.VMContextKNN( 200, 3000, similarity="cosine", last_n_days=None, extend=False )
     algs['vsknn-200-2000-cosine'] = vmsknn
      
-    ssknn = ssknn.SeqContextKNN( 100, 500, similarity="cosine", extend=False )
-    algs['ssknn-100-500-cosine-div'] = ssknn
+    # ssknn = ssknn.SeqContextKNN( 100, 500, similarity="cosine", extend=False )
+    # algs['ssknn-100-500-cosine-div'] = ssknn
      
-    sfsknn = sfsknn.SeqFilterContextKNN( 100, 500, similarity="cosine", extend=False )
-    algs['sfsknn-100-500-cosine-div'] = ssknn
+    # sfsknn = sfsknn.SeqFilterContextKNN( 100, 500, similarity="cosine", extend=False )
+    # algs['sfsknn-100-500-cosine-div'] = ssknn
         
     #gr4rec2
     
-    # gru = gru4rec2.GRU4Rec(n_epochs=10, loss='bpr-max-0.5', final_act='linear', hidden_act='tanh', layers=[100], batch_size=32, dropout_p_hidden=0.0, learning_rate=0.2, momentum=0.5, n_sample=2048, sample_alpha=0, time_sort=True)
-    # algs['gru-100-bpr-max-0.5'] = gru
+    gru = gru4rec2.GRU4Rec(n_epochs=500, loss='bpr-max-0.5', final_act='linear', hidden_act='relu', layers=[350], batch_size=32, dropout_p_hidden=0.0, learning_rate=0.00005, momentum=0.8, n_sample=2048, sample_alpha=0.3, time_sort=True)
+    algs['gru-100-bpr-max-0.51'] = gru
     
+    gru = gru4rec2.GRU4Rec(n_epochs=500, loss='bpr-max-0.5', final_act='softmax_logit', hidden_act='relu', layers=[350], batch_size=32, dropout_p_hidden=0.0, learning_rate=0.00005, momentum=0.8, n_sample=2048, sample_alpha=0.3, time_sort=True)
+    algs['gru-100-bpr-max-0.52'] = gru
+
     #session mf
     
-    smf = smf.SessionMF( factors=100, batch=32, learn='adagrad_sub', learning_rate=0.085, momentum=0.2, regularization=0.005, dropout=0.3, skip=0.0, epochs=10, shuffle=-1, activation='linear', objective='top1_max' )
-    algs['smf-top1-max'] = smf
+    # smf = smf.SessionMF( factors=100, batch=32, learn='adagrad_sub', learning_rate=0.085, momentum=0.2, regularization=0.005, dropout=0.3, skip=0.0, epochs=10, shuffle=-1, activation='linear', objective='top1_max' )
+    # algs['smf-top1-max'] = smf
     
     #filemodel to use pretrained pickled classes
-#     fmdl = fm.FileModel( 'mdl/test-gru.mdl' )
-#     algs['fm-gru'] = fmdl;
+    # fmdl = fm.FileModel( 'mdl/test-gru.mdl' )
+    # algs['fm-gru'] = fmdl;
     
-    #sequential recommendations adapter ()
+    # sequential recommendations adapter ()
     
-    adpt = ad.Adapter(algo='bprmf')
-    algs['bprmf'] = adpt
+    # adpt = ad.Adapter(algo='bprmf')
+    # algs['bprmf'] = adpt
      
-    adpt = ad.Adapter(algo='fism')
-    algs['fism'] = adpt
+    # adpt = ad.Adapter(algo='fism')
+    # algs['fism'] = adpt
      
-    adpt = ad.Adapter(algo='fossil')
-    algs['fossil'] = adpt
+    # adpt = ad.Adapter(algo='fossil')
+    # algs['fossil'] = adpt
      
-    adpt = ad.Adapter(algo='fpmc')
-    algs['fpmc'] = adpt
+    # adpt = ad.Adapter(algo='fpmc')
+    # algs['fpmc'] = adpt
     
-    #weighted example
+    # #weighted example
 
-    hybrid = wh.WeightedHybrid( [vmsknn, sra], [0.5,0.5], fit=False )
-    algs['whybrid-test-50-50'] = hybrid;
+    # hybrid = wh.WeightedHybrid( [vmsknn, sra], [0.5,0.5], fit=False )
+    # algs['whybrid-test-50-50'] = hybrid;
      
-    hybrid = wh.WeightedHybrid( [vsknn.VMContextKNN( 100, 2000 ), sr.SequentialRules()], [0.5,0.5], fit=True )
-    algs['whybrid-test-50-50-fit'] = hybrid;
+    # hybrid = wh.WeightedHybrid( [vsknn.VMContextKNN( 100, 2000 ), sr.SequentialRules()], [0.5,0.5], fit=True )
+    # algs['whybrid-test-50-50-fit'] = hybrid;
 
     
     '''
