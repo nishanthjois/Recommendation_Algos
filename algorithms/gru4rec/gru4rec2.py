@@ -7,12 +7,17 @@ Created on Mon Jun 22 15:14:20 2015
 import theano
 from theano import tensor as T
 from theano import function
-from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
+# from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
+# from theano.tensor.shared_randomstreams import RandomStreams as RandomStreams
+#from theano.tensor.shared_randomstreams import RandomStreams
+
+# from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
+
 import numpy as np
 import pandas as pd
 from collections import OrderedDict
 
-srng = RandomStreams()
+#srng = RandomStreams()
 
 class GRU4Rec:
     '''
@@ -81,7 +86,7 @@ class GRU4Rec:
 
     '''
     def __init__(self, loss, final_act, hidden_act, layers,
-                 n_epochs=10, batch_size=50, dropout_p_hidden=0.5, dropout_p_embed=0.0, learning_rate=0.05, momentum=0.0, lmbd=0.0, embedding=0, n_sample=0, sample_alpha=0.75, smoothing=0,
+                 n_epochs=20, batch_size=50, dropout_p_hidden=0.2, dropout_p_embed=0.2, learning_rate=0.001, momentum=0.0, lmbd=0.0, embedding=0, n_sample=10, sample_alpha=0.75, smoothing=0,
                  adapt='adagrad', decay=0.9, grad_cap=0,
                  sigma=0, init_as_normal=False, reset_after_session=True, train_random_order=False, time_sort=True,
                  session_key='SessionId', item_key='ItemId', time_key='Time'):
@@ -247,7 +252,7 @@ class GRU4Rec:
     def dropout(self, X, drop_p):
         if drop_p > 0:
             retain_prob = 1 - drop_p
-            X *= srng.binomial(X.shape, p=retain_prob, dtype=theano.config.floatX) / retain_prob
+            X *= np.random.binomial(X.shape, p=retain_prob) / retain_prob
         return X
     def adam(self, param, grad, updates, sample_idx = None, epsilon = 1e-6):
         v1 = np.float32(self.decay)
